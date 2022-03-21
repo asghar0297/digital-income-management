@@ -29,6 +29,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         return auth()->user();
     });
     Route::resource('category','CategoryController');
+    Route::resource('transcation','TranscationController');
 
     Route::post('/auth/logout', 'AuthController@logout');
 });
