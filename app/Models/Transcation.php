@@ -24,7 +24,7 @@ class Transcation extends Model
     {
         // dd($this->category->type);
 
-        if($this->category->type == 'Expense')
+        if($this->category->type == 'expense')
         {
             $this->attributes['amount'] = -1 * $value;
         }else{

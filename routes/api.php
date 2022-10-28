@@ -28,8 +28,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/me', function(Request $request) {
         return auth()->user();
     });
-    Route::resource('category','CategoryController');
     Route::resource('transcation','TranscationController');
 
-    Route::post('/auth/logout', 'AuthController@logout');
 });
+Route::post('/auth/logout', 'AuthController@logout');
+Route::resource('category','CategoryController');

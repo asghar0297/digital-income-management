@@ -1,0 +1,8 @@
+POST http://hisaab-kitaab.net/api/auth/register
+Content-Type: application/json
+
+{
+    "name":"demo",
+    "email":"demo@mail.com",
+    "password":"123456",
+}

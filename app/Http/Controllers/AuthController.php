@@ -20,7 +20,8 @@ class AuthController extends Controller
             $validator = Validator::make($request->all(),[
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|unique:users,email',
-                'password' => 'required|string|min:6'
+                'password' => 'required|string|min:6|confirmed'
+                
             ]);
 
             if ($validator->fails()) {
@@ -34,9 +35,9 @@ class AuthController extends Controller
                 'email' => $request->email
             ]);
 
-            return $this->success([
-                'token' => $user->createToken('API Token')->plainTextToken
-            ]);
+            $data['token'] = $user->createToken('API Token')->plainTextToken; 
+            $data['user'] = $user; 
+            return $this->success($data,'User Register Sucessfully');
 
 
     }
@@ -54,18 +55,20 @@ class AuthController extends Controller
         }
 
         if (!Auth::attempt($request->all())) {
-            return $this->error('Credentials not match', 401);
+            $errors = $validator->getMessageBag()->add('unauthorized', 'Credentials not match');
+            return $this->error($errors, 401);
         }
-
-        return $this->success([
-            'token' => auth()->user()->createToken('API Token')->plainTextToken
-        ]);
+        $data['token'] = auth()->user()->createToken('API Token')->plainTextToken;
+        $data['user'] = auth()->user();
+        return $this->success($data);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
+        dd($request->header());
+        
+        dd(auth()->user());
         auth()->user()->tokens()->delete();
-
         return [
             'message' => 'Tokens Revoked'
         ];
