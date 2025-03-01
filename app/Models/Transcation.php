@@ -15,10 +15,10 @@ class Transcation extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function setUserIdAttribute($value)
-    {
-        $this->attributes['user_id'] = Auth::id();
-    }
+    // public function setUserIdAttribute($value)
+    // {
+    //     $this->attributes['user_id'] = Auth::id();
+    // }
 
     public function setAmountAttribute($value)
     {
@@ -31,5 +31,15 @@ class Transcation extends Model
             $this->attributes['amount'] = $value;
 
         }
+    }
+
+    public function getPrettyCategoryAttribute(){
+        $category = $this->category;
+        // dd($this->category->parent_category);
+        if($category->parent_category)
+        {
+            $category = $category->category .' ('.$category->parent_category->category.')';
+        }
+        return $category;
     }
 }

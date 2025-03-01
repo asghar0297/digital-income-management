@@ -18,9 +18,10 @@ class CreateTranscationsTable extends Migration
             $table->id();
             $table->date('date')->default(Carbon::now());
             $table->integer('category_id');
-            $table->integer('amount');
-            $table->decimal('description')->nullable();
             $table->integer('user_id');
+            $table->integer('account_id')->nullable();
+            $table->decimal('amount');
+            $table->mediumText('description')->nullable();
             $table->softdeletes();
             $table->timestamps();
         });
