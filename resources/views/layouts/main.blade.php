@@ -46,6 +46,8 @@
 		<link href="{{ url('assets/plugins/datatable/responsive.bootstrap4.min.css') }}" rel="stylesheet" />
 
 		
+
+		
 	</head>
 	<body class="app sidebar-mini rtl">
 
@@ -128,6 +130,8 @@
 		{{-- <script src="./../assets/plugins/datatable/dataTables.responsive.min.js"></script>
 		<script src="./../assets/plugins/datatable/responsive.bootstrap4.min.js"></script> --}}
 		<script src="{{ url('assets/plugins/datatable/datatable.js') }}"></script>
+
+		@yield('scripts') <!-- Scripts section -->
 
 	</body>
 </html>

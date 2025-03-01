@@ -139,6 +139,7 @@
         <li class="slide">
             <a class="side-menu__item" data-toggle="slide" href="#"><i class="side-menu__icon typcn typcn-document-text"></i><span class="side-menu__label">Expense Management</span><i class="angle fa fa-angle-right"></i></a>
             <ul class="slide-menu">
+                <li><a href="{{ route('expense-management.dashboard') }}" class="slide-item">Dashboard</a></li>
                 <li><a href="{{ route('expense-management.category.index') }}" class="slide-item">Manage Categories</a></li>
                 <li><a href="{{ route('expense-management.transaction.index') }}" class="slide-item">Manage Transactions</a></li>
             </ul>
