@@ -182,6 +182,7 @@
                     }else{
                         // if child category is not available hide child category and make parent category as child category
                         categoryBox.hide();
+                        category.prop('required',false);
                         element.attr('name', 'category_id');
                     }
                 }
