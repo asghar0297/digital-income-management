@@ -141,6 +141,7 @@
             <ul class="slide-menu">
                 <li><a href="{{ route('expense-management.dashboard') }}" class="slide-item">Dashboard</a></li>
                 <li><a href="{{ route('expense-management.category.index') }}" class="slide-item">Manage Categories</a></li>
+                <li><a href="{{ route('expense-management.accounts.index') }}" class="slide-item">Manage Accounts</a></li>
                 <li><a href="{{ route('expense-management.transaction.index') }}" class="slide-item">Manage Transactions</a></li>
             </ul>
         </li>

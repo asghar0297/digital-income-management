@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\Category;
 use App\Models\Transcation;
 use Illuminate\Http\Request;
@@ -10,9 +11,9 @@ use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
 {
-    protected $accounts = ['1' => 'United Bank Limited', '2' => 'Allied Bank Limited', '3' => 'Easy Paisa' , '4' => 'Sada Pay', '5' => 'Cash'];
+    protected $accounts;
     public function __construct(){
-        
+        $this->accounts = Account::where('status',1)->pluck('name','id');
     }
 
     public function index()
@@ -46,15 +47,22 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
-        $validatar = Validator::make($request->all(),$this->rules());
-
+       
         $this->validate($request, $this->rules());
 
         $data = $request->all();
         $data['user_id'] = 1;
+
+        Transcation::setAmount($data);
+
+        // dd($data);
+
+       
+
         $category = Transcation::create($data);
         Session::flash('success','Transcation Added Successfully');
         return redirect()->route('expense-management.transaction.create');
     }
+
+    
 }

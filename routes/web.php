@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AcccountController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\PrayerController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
@@ -21,6 +23,7 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
     Route::resource('prayer-management', PrayerController::class);
     Route::prefix('expense-management')->name('expense-management.')->group(function () {
         Route::resource('category', CategoryController::class);
+        Route::resource('accounts', AccountController::class);
         Route::resource('transaction', TransactionController::class);
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

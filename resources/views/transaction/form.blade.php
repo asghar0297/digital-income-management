@@ -45,12 +45,18 @@
                                             $model->parent_category_id,
                                             [
                                                 'id' => 'parent_category',
-                                                'class'=>'form-control select2 custom-select ' . ($errors->has('parent_category_id') ? 'is-invalid' : ''),
+                                                'class'=>'form-control select2 custom-select ' . ($errors->has('category_id') ? 'is-invalid' : ''),
                                                 'placeholder'=>'Select Parent Category',
                                                 'onchange' => 'getChildCategory($(this))', 
                                             ]
                                         )
                                 !!}
+
+                                @if ($errors->has('category_id'))
+                                    <div class="invalid-feedback">
+                                        {{ $errors->first('category_id') }}
+                                    </div>
+                                @endif
 
                             </div>
                         </div>
@@ -66,7 +72,6 @@
                                                 'id' => 'category_id',
                                                 'class'=>'form-control select2 custom-select ' . ($errors->has('category_id') ? 'is-invalid' : ''),
                                                 'placeholder'=>'Select Category',
-                                                'required'=>'required',
                                             ]
                                         )
                                 !!}
@@ -75,8 +80,9 @@
                             </div>
                         </div>
                         
+                        
 
-                        <div class="col-md-6">
+                        <div class="col-md-6">  
                             <div class="form-group mt-4">
                                 <label class="form-label">Account</label>
                                 {!! Form::select(
@@ -177,13 +183,17 @@
                     // if child category is available show child category
                     if(res.data_count > 0){
                         element.attr('name', 'parent_category_id');
+                        category.prop('required',true);
+                        category.prop('disabled',false);
                         category.html(res.data);
                         categoryBox.show();
                     }else{
                         // if child category is not available hide child category and make parent category as child category
                         categoryBox.hide();
                         category.prop('required',false);
+                        category.prop('disabled',true);
                         element.attr('name', 'category_id');
+                        element.val(selectedValue);
                     }
                 }
                 

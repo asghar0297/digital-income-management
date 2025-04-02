@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAcccountsTable extends Migration
+class CreateAccountsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -20,9 +20,8 @@ class CreateAcccountsTable extends Migration
             $table->enum('account_type', ['cash', 'bank', 'credit_card', 'digital_wallet', 'investment','saving', 'other']); // Account type
             $table->decimal('initial_balance', 12, 2)->default(0.00); // Starting balance
             $table->decimal('current_balance', 12, 2)->default(0.00); // Current balance
-            $table->string('currency', 3)->default('USD'); // Currency code (USD, EUR, etc.)
             $table->text('description')->nullable(); // Optional description
-            $table->boolean('is_active')->default(true); // Active status
+            $table->boolean('status')->default(true); // Active status
             $table->softDeletes();
             $table->timestamps(); // created_at & updated_at
         });
