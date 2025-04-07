@@ -66,18 +66,22 @@
                      </form> --}}
                      <div class="row text-center">
                         <div class="col-md-3">
-                            <button type="button" class="btn btn-success btn-lg mb-1 w-100">Daily</button>
+                            <button type="button" class="btn btn-success btn-lg mb-1 w-100" onclick="getDashboard('daily')" >Daily</button>
                         </div>
                         <div class="col-md-3">
-                            <button type="button" class="btn btn-primary btn-lg mb-1 w-100">Weekly</button>
+                            <button type="button" class="btn btn-primary btn-lg mb-1 w-100" onclick="getDashboard('weekly')" >Weekly</button>
                         </div>
                         <div class="col-md-3">
-                            <button type="button" class="btn btn-warning btn-lg mb-1 w-100">Monthly</button>
+                            <button type="button" class="btn btn-warning btn-lg mb-1 w-100" onclick="getDashboard('monthly')" >Monthly</button>
                         </div>
                         <div class="col-md-3">
-                            <button type="button" class="btn btn-danger btn-lg mb-1 w-100">Yearly</button>
+                            <button type="button" class="btn btn-danger btn-lg mb-1 w-100" onclick="getDashboard('yearly')" >Yearly</button>
                         </div>
                     </div>
+
+                    <input type="hidden" name="duration" class="duration" value="daily">
+              
+                    
 
                     <!-- Counters Row -->
                     <div class="row mt-4">
@@ -85,7 +89,7 @@
                         <div class="col-md-6 text-center mb-3 mb-md-0">
                             <div class="counter-container">
                                 <h6 class="text-muted">TOTAL EXPENSES</h6>
-                                <h1 class="display-4 font-weight-bold">RS 1,819,819</h1>
+                                <h1 class="display-4 font-weight-bold total_expense">RS 1,819,819</h1>
                             </div>
                         </div>
                         
@@ -93,16 +97,50 @@
                         <div class="col-md-6 text-center">
                             <div class="counter-container counter-balance">
                                 <h6 class="text-muted">CURRENT BALANCE</h6>
-                                <h1 class="display-4 font-weight-bold">RS 2,456,789</h1>
+                                <h1 class="display-4 font-weight-bold current_balance">RS 2,456,789</h1>
                             </div>
                         </div>
                     </div>
+
+                    <div class="row mt-4 accounts_row">
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">pie chart models</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-9">
+                                            <div id="placeholder" class="chartsh"></div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-6 col-md-6 col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Current Month Daily Expense</h3>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="empchart" class="chart-dropshadow"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
 
                     <div class="row mt-4">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">Bar Chart</h3>
+                                    <h3 class="card-title">Monthly Expense</h3>
                                 </div>
                                 <div class="card-body text-center">
                                     <div id="highchart7"></div>
@@ -114,18 +152,19 @@
                         </div>
                     </div>
                     
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12">
+                    
+
+                    <div class="row mt-4">
+                        <div class="col-12">
                             <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Model 4 </h3>
+                                <div class="card-header ">
+                                    <h3 class="card-title ">Transactions  List</h3>
                                 </div>
-                                <div class="card-body">
-                                    <div id="barlinechart" class="chartsh"></div>
+                                <div class="table-responsive transaction_table">
+                                    
                                 </div>
                             </div>
                         </div>
-                        
                     </div>
 
                 </div>
@@ -150,4 +189,339 @@
 		<script src="{{ url('assets/plugins/dygraph-charts/data.js') }}"></script>
          <!-- Chart js-->
 		<script src="{{ url('assets/js/chart-dygraph.js') }}"></script>
+        <!-- Flot js -->
+		<script src="{{ url('assets/plugins/flotcharts/flotcharts.js')}}"></script>
+		<script src="{{ url('assets/plugins/flotcharts/flotcharts.fillbetween.js')}}"></script>
+		<script src="{{ url('assets/plugins/flotcharts/flotcharts.pie.js') }}"></script>
+		<script src="{{ url('assets/js/flot.js') }}"></script>
+        <!-- Charts js -->
+		<script src="{{ url('assets/plugins/chart/chart.bundle.js') }}"></script>
+		<script src="{{ url('assets/plugins/chart/utils.js') }}"></script>
+
+<script>
+
+    var from = '2025-04-01'
+    var to = '2025-04-31'
+    var duration = $('.duration').val()
+
+$(function() {
+    
+    getDataByCategory();
+    getExpenses();
+    getAccounts();
+    getDailyExpenseChart();
+    getMonthlyExpenseChart();
+});
+
+function getDashboard(duration){
+    $('.duration').val(duration)
+    getDataByCategory();
+    getExpenses();
+    getAccounts();
+}
+
+function getDataByCategory(){
+    $.ajax({
+            url: '{{ route('expense-management.getExpenseByCategories') }}',
+            type: 'GET',
+            data:{from:from,to:to,duration},
+            success:function(res){
+                
+                if(res.status){
+              
+                    var data = []
+                    for (var i = 0; i < res.data.length; i++) {
+                        
+                        data[i] = {
+                            label: res.data[i].category,
+                            data: res.data[i].percentage
+                        }
+                    }
+
+                        var placeholder = $("#placeholder");
+                        placeholder.unbind();
+                        $("#title").text("Label Radius");
+                        $("#description").text("Slightly more transparent label backgrounds and adjusted the radius values to place them within the pie.");
+                        $.plot(placeholder, data, {
+                            series: {
+                                pie: {
+                                    show: true,
+                                    radius: 1,
+                                    label: {
+                                        show: true,
+                                        radius: 3 / 4,
+                                        formatter: labelFormatter,
+                                        background: {
+                                            opacity: 0.5
+                                        }
+                                    }
+                                }
+                            },
+                            colors: ['#6e00ff ', '#ff6e00', '#45aaf2', '#ecb403', '#64E572'],
+                            legend: {
+                                show: false
+                            }
+                        });
+                
+                }else{
+                    console.log('else');
+                    
+                }
+              
+            }
+    })
+}
+
+function getExpenses(){
+    $.ajax({
+            url: '{{ route('expense-management.getExpenses') }}',
+            type: 'GET',
+            data:{duration:duration},
+            success:function(res){
+                
+                if(res.status){
+              
+                    $('.transaction_table').html(res.data.transactions);
+                    $('.total_expense').text(res.data.total_expense);
+                    $('.current_balance').text(res.data.total_balance);
+
+                        
+                
+                }else{
+                    console.log('else');
+                    
+                }
+              
+            }
+    })
+}
+
+function getAccounts(){
+    $.ajax({
+            url: '{{ route('expense-management.getAccounts') }}',
+            type: 'GET',
+            success:function(res){
+                
+                if(res.status){
+              
+                    $('.accounts_row').html(res.data.transactions);
+                
+                }else{
+                    console.log(res.message);
+                    
+                }
+              
+            }
+    })
+}
+
+function getDailyExpenseChart(){
+    $.ajax({
+            url: '{{ route('expense-management.getDailyExpenseChart') }}',
+            type: 'GET',
+            success:function(res){
+                
+                if(res.status){
+              
+                    let labels = [];
+                    let data = [];
+
+                    res.data.forEach(value =>{
+                        labels.push(value.day)
+                        data.push(value.amount)
+                    })
+
+                    console.log('labels',labels);
+                    console.log('data',data);
+                    
+
+                    var myCanvas = document.getElementById("empchart");
+                    myCanvas.height="260";
+                    var myChart = new Chart( myCanvas, {
+                        type: 'line',
+                        data : {
+                            labels: labels,
+                            type: 'line',
+                            datasets: [
+                            {
+                                label: "Daily Expense",
+                                data: data,
+                                borderColor: "rgb(0,145,255,0.6)",
+                                backgroundColor: "rgb(0,145,255,0.8)",
+                                pointBorderWidth :2,
+                                pointRadius :4,
+                                pointHoverRadius :4,
+                                borderWidth: 2,
+
+                            }
+                        ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            legend: {
+                                display:true
+                            },
+                            tooltips: {
+                                show: true,
+                                showContent: true,
+                                alwaysShowContent: true,
+                                triggerOn: 'mousemove',
+                                trigger: 'axis',
+                                axisPointer:
+                                {
+                                    label: {
+                                        show: false,
+                                    },
+                                }
+                            },
+
+                            scales: {
+                                xAxes: [ {
+                                    gridLines: {
+                                        color: '#eaf2f9',
+                                        zeroLineColor: '#bdbdc1'
+                                    },
+                                    ticks: {
+                                        fontSize: 12,
+                                        fontColor: '#bdbdc1',
+                                        beginAtZero: true,
+                                        padding: 0
+                                    }
+                                } ],
+                                yAxes: [ {
+                                    gridLines: {
+                                        color: 'transparent',
+                                        zeroLineColor: '#bdbdc1'
+                                    },
+                                    ticks: {
+                                        fontSize: 12,
+                                        fontColor: '#bdbdc1',
+                                        beginAtZero: false,
+                                        padding: 0
+                                    }
+                                } ]
+                            },
+                            title: {
+                                display: false,
+                            },
+                            elements: {
+                                line: {
+                                    borderWidth: 2
+                                },
+                                point: {
+                                    radius: 0,
+                                    hitRadius: 10,
+                                    hoverRadius: 4
+                                }
+                            }
+                        }
+                    })
+                
+                }else{
+                    console.log(res.message);
+                    
+                }
+              
+            }
+    })
+}
+
+function getMonthlyExpenseChart(){
+    $.ajax({
+            url: '{{ route('expense-management.getMonthlyExpenseChart') }}',
+            type: 'GET',
+            success:function(res){
+                
+                if(res.status){
+              
+                    let labels = [];
+                    let data = [];
+
+                    res.data.forEach(value =>{
+                        labels.push(value.month)
+                        data.push(parseInt(value.amount))
+                    })
+
+                    console.log(labels);
+                    console.log(data);
+                    
+
+                    /* ---hightchart7----*/
+                    var chart = Highcharts.chart('highchart7', {
+                        title: {
+                            text: ''
+                        },
+                        subtitle: {
+                            text: 'Plain'
+                        },
+                        exporting: {
+                            enabled: false
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        xAxis: {
+                            categories: labels
+                        },
+                        colors: ['#6e00ff ', '#ff6e00', '#ecb403', '#24CBE5', '#64E572', '#FF9655', '#f1c40f', '#6AF9C4'],
+                        series: [{
+                            type: 'column',
+                            colorByPoint: true,
+                            data: data,
+                            showInLegend: false
+                        }]
+                    });
+                    $('#plain').click(function() {
+                        chart.update({
+                            chart: {
+                                inverted: false,
+                                polar: false
+                            },
+                            subtitle: {
+                                text: 'Plain'
+                            }
+                        });
+                    });
+                    $('#inverted').click(function() {
+                        chart.update({
+                            chart: {
+                                inverted: true,
+                                polar: false
+                            },
+                            subtitle: {
+                                text: 'Inverted'
+                            }
+                        });
+                    });
+                    $('#polar').click(function() {
+                        chart.update({
+                            chart: {
+                                inverted: false,
+                                polar: true
+                            },
+                            subtitle: {
+                                text: 'Polar'
+                            }
+                        });
+                    });
+
+                    
+                        
+                
+                }else{
+                    console.log(res.message);
+                    
+                }
+              
+            }
+    })
+}
+
+
+                    
+                    
+                
+
+</script>
 @endsection

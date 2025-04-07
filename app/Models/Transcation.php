@@ -52,11 +52,11 @@ class Transcation extends Model
     public function getPrettyCategoryAttribute(){
         $category = $this->category;
         // dd($this->category->parent_category);
-        if($category->parent_category)
+        if(isset($category->parent_category))
         {
             $category = $category->category .' ('.$category->parent_category->category.')';
         }else{
-            $category = $category->category ;
+            $category = $category->category ?? 'Transfer' ;
         }
         return $category;
     }

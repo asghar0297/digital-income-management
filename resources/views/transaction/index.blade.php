@@ -58,7 +58,7 @@
                                         <td>{{ $model->pretty_category ?? '-' }}</td>
                                         <td>{{ $model->account->name ?? '-' }}</td>
                                         <td>{{ $model->amount ?? '-' }}</td>
-                                        <td>{{ $model->category->type }}</td>
+                                        <td>{{ $model->category->type ?? 'Transfer' }}</td>
                                         <td>{{ $model->created_at->format('j F, Y, g:i a') }}</td>
                                         <td class="text-center align-middle">
                                             <div class="btn-group align-top">
