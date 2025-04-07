@@ -106,10 +106,10 @@
                     </div>
                     
                     <div class="row mt-4">
-                        <div class="col-lg-6 col-md-6">
+                        <div class="col-lg-12 col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">pie chart models</h3>
+                                    <h3 class="card-title">Expense Category</h3>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
@@ -121,11 +121,24 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-xl-6 col-md-6 col-lg-6">
+                    
+                        <div class="col-xl-12 col-lg-12 col-md-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">Current Month Daily Expense</h3>
+                                    <h3 class="card-title">Expense Category</h3>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="pieChart1" class="chart-dropshadow"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-xl-12 col-lg-12 col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Daily Expense</h3>
                                 </div>
                                 <div class="card-body">
                                     <canvas id="empchart" class="chart-dropshadow"></canvas>
@@ -229,14 +242,24 @@ function getDataByCategory(){
                 
                 if(res.status){
               
-                    var data = []
+                    var values = [];
+                    var labels = [];
+                    var data = [];
                     for (var i = 0; i < res.data.length; i++) {
                         
                         data[i] = {
                             label: res.data[i].category,
                             data: res.data[i].percentage
                         }
+
+                        labels.push(res.data[i].category);
+                        values.push(res.data[i].percentage);
                     }
+
+                    console.log(labels);
+                    console.log(values);
+                    // return;
+                    
 
                         var placeholder = $("#placeholder");
                         placeholder.unbind();
@@ -262,6 +285,31 @@ function getDataByCategory(){
                                 show: false
                             }
                         });
+
+                             //----pie chart1
+                            var ctx = document.getElementById("pieChart1");
+                            ctx.height = 400;
+                            var myChart = new Chart(ctx, {
+                                type: 'pie',
+                                data: {
+                                    datasets: [{
+                                        data: values,
+                                        backgroundColor: ['#6e00ff', '#ff6e00', '#0091ff', '#00ff6e', '#ee00ff'],
+                                        hoverBackgroundColor: ['#6e00ff', '#ff6e00', '#0091ff', '#00ff6e', '#ee00ff'],
+                                        borderColor:'transparent',
+                                    }],
+                                    labels: labels
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    legend: {
+                                        labels: {
+                                            fontColor: "#14171a"
+                                        },
+                                    },
+                                }
+                            });  
                 
                 }else{
                     console.log('else');
@@ -331,8 +379,6 @@ function getDailyExpenseChart(){
                         data.push(value.amount)
                     })
 
-                    console.log('labels',labels);
-                    console.log('data',data);
                     
 
                     var myCanvas = document.getElementById("empchart");
@@ -443,8 +489,6 @@ function getMonthlyExpenseChart(){
                         data.push(parseInt(value.amount))
                     })
 
-                    console.log(labels);
-                    console.log(data);
                     
 
                     /* ---hightchart7----*/
@@ -520,7 +564,7 @@ function getMonthlyExpenseChart(){
 
 
                     
-                    
+             
                 
 
 </script>
