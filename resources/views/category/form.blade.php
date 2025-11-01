@@ -85,7 +85,7 @@
                             <div class="form-group mt-6">
                                 <div class="form-label">Active/Inactive</div>
                                 <label class="custom-switch">
-                                    <input type="checkbox" name="status" class="custom-switch-input" {{ $model->status ? 'checked' : 'cc' }}>
+                                    <input type="checkbox" name="status" class="custom-switch-input" {{ $model->status ? 'checked' : 'checked' }}>
                                     <span class="custom-switch-indicator"></span>
                                     {{-- <span class="custom-switch-description">I agree with terms and conditions</span> --}}
                                 </label>
